@@ -1,16 +1,16 @@
 <updates>
     <update>
-        <name><![CDATA[Mod cf Filtering by Gartes]]></name>
-        <description><![CDATA[Модуль вывода фильтров для VM]]></description>
+        <name><![CDATA[Mod Filters Breadcrumbs by Gartes]]></name>
+        <description><![CDATA[Custom Filters Breadcrumbs - @Gartes]]></description>
         <type>module</type>
-        <element>mod_cf_filtering</element>
-        <version>3.10.24</version>
+        <element>mod_cf_breadcrumbs</element>
+        <version>1.0.7</version>
         <client>site</client>
         <infourl title="Joomla!">https://www.joomla.org/announcements/release-news/5765-joomla-3-9-6-release.html
         </infourl>
         <downloads>
             <downloadurl type="full" format="zip">
-                https://github.com/GJModules/mod_cf_filtering/archive/refs/heads/main.zip
+                https://github.com/GJModules/mod_cf_breadcrumbs/archive/refs/heads/main.zip
             </downloadurl>
         </downloads>
         <targetplatform name="joomla" version=".*"/>
