@@ -1,0 +1,41 @@
+.cf_tag {
+    display: inline-block;
+    padding: 0 0.8em;
+    margin: 0.5em;
+    background-color: #dedede;
+    color: #000000;
+    opacity:0.85;
+    text-decoration: none;
+    border:1px solid #cccccc;
+}
+
+.cf_tag_color{
+    padding: 0;
+    width: 4em;
+}
+
+.cf_tag:hover{
+    text-decoration: none;
+    opacity:1;
+    background-color: #dedede;
+    color: #000000;
+}
+
+.cf_tag.cf_tag_icon_close::after{
+    content: 'x';
+    margin-inline-start: 1em;
+    padding-inline-start: 0.7em;
+    border-inline-start: 1px #cccccc solid;
+    font-size: 1em;
+}
+
+.cf_tag_color.cf_tag_icon_close::after{
+    margin-inline-start: 0;
+}
+
+.cf_tag_inner{
+    display: inline-block ;
+    margin: 0 !important;
+    padding: 0.4em 0;
+    line-height: 1em;
+}

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="module" version="3.5" client="site" method="upgrade">
+    <name>mod_cf_breadcrumbs</name>
+    <creationDate>2021-04-05</creationDate>
+    <author>breadkesigns</author>
+    <authorUrl>https://breakdesigns.net</authorUrl>
+    <copyright>Copyright(c) 2021 breakdesigns.net</copyright>
+    <license>GNU/GPL v.2</license>
+    <version>1.0.5</version>
+    <description>MOD_CF_BREADCRUMBS_XML_DESCRIPTION</description>
+    <files>
+        <filename module="mod_cf_breadcrumbs">mod_cf_breadcrumbs.php</filename>
+        <folder>assets</folder>
+        <folder>tmpl</folder>
+        <filename>bootstrap.php</filename>
+        <filename>helper.php</filename>
+        <filename>index.html</filename>
+        <filename>mod_cf_breadcrumbs.xml</filename>
+        <filename>UrlHandler.php</filename>
+    </files>
+    <languages folder="language">
+        <language tag="en-GB">en-GB/en-GB.mod_cf_breadcrumbs.ini</language>
+        <language tag="en-GB">en-GB/en-GB.mod_cf_breadcrumbs.sys.ini</language>
+        <language tag="el-GR">el-GR/el-GR.mod_cf_breadcrumbs.ini</language>
+        <language tag="en-GB">el-GR/el-GR.mod_cf_breadcrumbs.sys.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.mod_cf_breadcrumbs.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.mod_cf_breadcrumbs.sys.ini</language>
+    </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic"
+                      addfieldpath="/administrator/components/com_customfilters/models/fields">
+                <field name="void" type="void"
+                       label="" description=""/>
+            </fieldset>
+
+            <fieldset name="MOD_CF_FILTERING_KEYWORD">
+                <field name="keyword_flt_published" type="radio" default="1"
+                       class="btn-group btn-group-yesno" label="MOD_CF_FILTERING_PUBLISHED_LABEL"
+                       description="MOD_CF_FILTERING_PUBLISHED_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+
+            <fieldset name="MOD_CF_FILTERING_CATEGORIES">
+                <field name="category_flt_published" type="radio" default="1"
+                       class="btn-group btn-group-yesno" label="MOD_CF_FILTERING_PUBLISHED_LABEL"
+                       description="MOD_CF_FILTERING_PUBLISHED_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+
+            <fieldset name="MOD_CF_FILTERING_MANUFACTURERS">
+                <field name="manuf_flt_published" type="radio" default="1"
+                       class="btn-group btn-group-yesno" label="MOD_CF_FILTERING_PUBLISHED_LABEL"
+                       description="MOD_CF_FILTERING_PUBLISHED_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+
+            <fieldset name="MOD_CF_FILTERING_PRICE">
+                <field name="price_flt_published" type="radio" default="1"
+                       class="btn-group btn-group-yesno" label="MOD_CF_FILTERING_PUBLISHED_LABEL"
+                       description="MOD_CF_FILTERING_PUBLISHED_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+
+            <fieldset name="MOD_CF_FILTERING_STOCK">
+                <field name="stock_flt_published" type="radio" default="1"
+                       class="btn-group btn-group-yesno" label="MOD_CF_FILTERING_PUBLISHED_LABEL"
+                       description="MOD_CF_FILTERING_PUBLISHED_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+
+            <fieldset name="MOD_CF_FILTERING_CUSTOM_FILTERS">
+                <field name="custom_flt_published" type="radio" default="1"
+                       class="btn-group btn-group-yesno" label="MOD_CF_FILTERING_PUBLISHED_LABEL"
+                       description="MOD_CF_FILTERING_PUBLISHED_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+            <fieldset name="advanced">
+                <field
+                        name="layout"
+                        type="modulelayout"
+                        label="JFIELD_ALT_LAYOUT_LABEL"
+                        description="JFIELD_ALT_MODULE_LAYOUT_DESC"
+                />
+
+                <field
+                        name="moduleclass_sfx"
+                        type="textarea"
+                        label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+                        description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"
+                        rows="3"
+                />
+            </fieldset>
+        </fields>
+    </config>
+</extension>

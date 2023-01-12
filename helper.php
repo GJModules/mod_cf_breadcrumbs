@@ -1,111 +1,222 @@
 <?php
 /**
- * @package     Joomla.Site
- * @subpackage  mod_breadcrumbs
+ * @package     Breakdesigns.CustomFilters
  *
- * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright © 2010-2021 Breakdesigns.net. All rights reserved.
+ * @license     GNU Geneal Public License 2 or later, see COPYING.txt for license details.
  */
 
-defined('_JEXEC') or die;
+// no direct access
+defined('_JEXEC') or die();
+
+use Joomla\CMS\Router\Route;
+use Joomla\Registry\Registry;
+use Breakdesigns\Module\CfBreadcrumbs\UrlHandler;
 
 /**
- * Helper for mod_breadcrumbs
+ * Class ModCfBreadcrumbsHelper
  *
- * @since  1.5
+ * This class is coupled with the filtering module's settings and OptionsHelper class
+ * If there are more than 1 filtering modules in the page, it will folllow only the 1st settings.
+ *
+ * @since 1.0.0
  */
-class ModBreadCrumbsHelper
+class ModCfBreadcrumbsHelper
 {
-	/**
-	 * Retrieve breadcrumb items
-	 *
-	 * @param   \Joomla\Registry\Registry  &$params  module parameters
-	 *
-	 * @return array
-	 * @throws Exception
-	 * @since 3.9
-	 */
-	public static function getList(&$params)
-	{
-		// Get the PathWay object from the application
-		$app     = JFactory::getApplication();
-		$pathway = $app->getPathway();
-		$items   = $pathway->getPathWay();
+    /**
+     *
+     * @var array
+     * @since 1.0.0
+     */
+    protected $fltSuffix = array(
+        'q' => 'keyword_flt',
+        'virtuemart_category_id' => 'category_flt',
+        'virtuemart_manufacturer_id' => 'manuf_flt',
+        'price' => 'price_flt',
+        'stock'=>'stock_flt',
+        'custom_f' => 'custom_flt'
+    );
 
-		if ($_SERVER['REMOTE_ADDR'] ==  DEV_IP )
-		{
-//		    echo'<pre>';print_r( $items );echo'</pre>'.__FILE__.' '.__LINE__;
-//		    die(__FILE__ .' '. __LINE__ );
+    /**
+     * @var stdClass
+     * @since 1.0.0
+     */
+    protected $filteringModule;
 
-		}
+    /**
+     * @var stdClass
+     * @since 1.0.0
+     */
+    protected $module;
 
-		$lang    = JFactory::getLanguage();
-		$menu    = $app->getMenu();
+    /**
+     * ModCfBreadcrumbsHelper constructor.
+     * @param $module
+     * @since 1.0.0
+     */
+    public function __construct($module)
+    {
+        $this->module = $module;
+        $this->filteringModule = \cftools::getModule();
+    }
 
-		// Look for the home menu
-		if (JLanguageMultilang::isEnabled())
-		{
-			$home = $menu->getDefault($lang->getTag());
-		}
-		else
-		{
-			$home  = $menu->getDefault();
-		}
+    /**
+     * Main entry function that returns the selections
+     *
+     * @return array
+     * @throws Exception
+     * @since 1.0.0
+     */
+    public function getList()
+    {
+        $selections = [];
+        $selected_flt = \CfInput::getInputs($cached = true);
+        if (empty($selected_flt)) {
+            return [];
+        }
 
-		$count = count($items);
+        // selected filters after encoding the output
+        $selected_flt = $output = \CfOutput::getOutput($selected_flt);
+        $selected['selected_flt'] = $selected_flt;
+        $selected['selected_flt_modif'] = $selected_flt;
+        $selected['selected_fl_per_flt'] = \CfOutput::getOutput(CfInput::getInputsPerFilter($this->module,
+            $cached = true),
+            $escape = true, $perfilter = true);
 
-		// Don't use $items here as it references JPathway properties directly
-		$crumbs = array();
+        $optionsHelper = \OptionsHelper::getInstance(\cftools::getModuleparams(), $this->filteringModule);
+        $UrlHanlder = new UrlHandler($this->filteringModule, $selected);
+        $published_setting_name = '_published';
+        $params = new Registry($this->module->params);
 
-		for ($i = 0; $i < $count; $i ++)
-		{
-			$crumbs[$i]       = new stdClass;
-			$crumbs[$i]->name = stripslashes(htmlspecialchars($items[$i]->name, ENT_COMPAT, 'UTF-8'));
-			$crumbs[$i]->link = JRoute::_( $items[$i]->link );
-		}
+        foreach ($selected_flt as $filterName => $values) {
+            //the filter key is used as a key for the module's settings
+            $filterKey = $filterName;
+            $display = 3; //checkbox
+            /*
+             * Check if it's a color custom filter.
+             * In that case we need another display type
+             */
+            if (strpos($filterName, 'custom_f_') !== false) {
+                // get the filter id
+                preg_match('/[0-9]+/', $filterName, $mathces);
+                $id = $mathces[0];
+                $custom_filters = \cftools::getCustomFilters();
+                $customfilter = $custom_filters[$id];
+                $display = in_array($customfilter->disp_type, [9, 10]) ? 10 : $display;
+                $filterKey = 'custom_f';
+            }
+            if ($params->get($this->fltSuffix[$filterKey] . $published_setting_name) == false) {
+                //the filter is unpublished
+                continue;
+            }
 
-		if ($params->get('showHome', 1))
-		{
-			$item       = new stdClass;
-			$item->name = htmlspecialchars($params->get('homeText', JText::_('MOD_BREADCRUMBS_HOME')), ENT_COMPAT, 'UTF-8');
-			$item->link = JRoute::_('index.php?Itemid=' . $home->id);
-			array_unshift($crumbs, $item);
-		}
+            $filter = ['var_name' => $filterName, 'display' => $display];
 
-		return $crumbs;
-	}
+            $selections [$filterName] = [];
+            if (is_array($values)) {
 
-	/**
-	 * Set the breadcrumbs separator for the breadcrumbs display.
-	 *
-	 * @param   string  $custom  Custom xhtml compliant string to separate the items of the breadcrumbs
-	 *
-	 * @return  string	Separator string
-	 *
-	 * @since   1.5
-	 */
-	public static function setSeparator($custom = null)
-	{
-		$lang = JFactory::getLanguage();
+                if ($filterName == 'price') {
+                    $values = $this->formatPrices($values);
+                    $filterOption = new stdClass();
+                    if (count($values) == 2) {
+                        $filterOption->name = implode(' - ', $values);
+                    } elseif (isset($values[0]) && !isset($values[1])) {
+                        $filterOption->name = JText::_('MOD_CF_BREADCRUMBS_FROM') . ' ' . $values[0];
+                    } elseif (isset($values[1]) && !isset($values[0])) {
+                        $filterOption->name = JText::_('MOD_CF_BREADCRUMBS_TO') . ' ' . $values[1];
+                    }
+                    $filterOption->url = Route::_($UrlHanlder->getURL($filter, '', 'clear'));;
+                    $filterOption->display = $display;
+                    $selections [$filterName][] = $filterOption;
+                    continue;
+                }
+                //multiple entry filters based on db values (categories, manufacturers, custom fields)
+                if ($filterName == 'virtuemart_category_id') {
+                    $categories = $optionsHelper->getOptions($filterName);
+                    $filterOptions = $categories['options'];
+                } else {
+                    $filterOptions = $optionsHelper->getActiveOptions($filterName);
+                }
+                foreach ($values as $value) {
+                    if (isset($filterOptions[$value])) {
+                        $filterOptions[$value]->url = Route::_($UrlHanlder->getURL($filter, $value));
+                        $filterOptions[$value]->display = $display;
+                        $selections [$filterName][] = $filterOptions[$value];
+                    }
+                }
+            } //single entry e.g.search
+            else {
+                $filterOption = new stdClass();
+                $filterOption->name = $values;
+                $filterOption->url = Route::_($UrlHanlder->getURL($filter, '', 'clear'));;
+                $filterOption->display = $display;
+                $selections [$filterName][] = $filterOption;
+            }
+        }
+        return $this->sort($selections);
+    }
 
-		// If a custom separator has not been provided we try to load a template
-		// specific one first, and if that is not present we load the default separator
-		if ($custom === null)
-		{
-			if ($lang->isRtl())
-			{
-				$_separator = JHtml::_('image', 'system/arrow_rtl.png', null, null, true);
-			}
-			else
-			{
-				$_separator = JHtml::_('image', 'system/arrow.png', null, null, true);
-			}
-		}
-		else
-		{
-			$_separator     = htmlspecialchars($custom, ENT_COMPAT, 'UTF-8');
-		}
+    /**
+     * Sort the selections according to the setting defined order
+     *
+     * @param array $selections
+     * @return array
+     * @since 1.0.0
+     */
+    protected function sort(array $selections)
+    {
+        $param_string = isset($this->filteringModule->params) ? $this->filteringModule->params : '';
+        $params = new Registry($param_string);
+        $sort_order = json_decode(str_replace("'", '"', $params->get('filterlist', "['q', 'virtuemart_category_id', 'virtuemart_manufacturer_id', 'price', 'stock', 'custom_f']")));
+        $newSelection = [];
+        $selection_keys = array_keys($selections);
+        foreach ($sort_order as $sortKey) {
+            foreach ($selection_keys as $filterName) {
+                if ($sortKey == $filterName || strpos($filterName, $sortKey) !== false) {
+                    $newSelection[$filterName] = $selections[$filterName];
+                }
+            }
+        }
+        return $newSelection;
+    }
 
-		return $_separator;
-	}
+    /**
+     * Format the prices by setting the currency symbols
+     *
+     * @param array $prices
+     * @return array
+     * @throws Exception
+     * @since 1.0.0
+     */
+    protected function formatPrices(array $prices)
+    {
+        if (empty($prices)) {
+            return [];
+        }
+
+        $japplication = \Joomla\CMS\Factory::getApplication();
+        $jinput = $japplication->input;
+        $vendor_currency = \cftools::getVendorCurrency();
+        $virtuemart_currency_id = $jinput->get('virtuemart_currency_id', $vendor_currency['vendor_currency'], 'int');
+        $currency_id = $japplication->getUserStateFromRequest("virtuemart_currency_id", 'virtuemart_currency_id',
+            $virtuemart_currency_id);
+        $currency_info = \cftools::getCurrencyInfo($currency_id);
+        $symbol_start = '';
+        $symbol_end = '';
+
+        if ($currency_info->currency_positive_style) {
+            if (strpos($currency_info->currency_positive_style, '{symbol}') == 0) {
+                $symbol_start = '&nbsp;' . $currency_info->currency_symbol;
+            } else {
+                $symbol_end = '<span class="cf_currency">' . $currency_info->currency_symbol . '&nbsp;' . '</span>';
+            }
+        } else {
+            $symbol_start = '<span class="cf_currency">&nbsp;' . $currency_info->currency_symbol . '</span>';
+        }
+
+        foreach ($prices as &$price) {
+            $price = $symbol_start . $price . $symbol_end;
+        }
+        return $prices;
+    }
 }
