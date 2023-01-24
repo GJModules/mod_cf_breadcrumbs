@@ -5,8 +5,8 @@
     <authorUrl></authorUrl>
     <copyright>Copyright(c)</copyright>
     <license>GNU/GPL v.2</license>
-    <creationDate>12.01.23-11:29</creationDate>
-    <version>1.0.6</version>
+    <creationDate>16.01.23-12:38</creationDate>
+    <version>1.0.7</version>
     <description><![CDATA[ <h3>Custom Filters Breadcrumbs - @Gartes</h3> ]]> </description>
     <files>
         <filename module="mod_cf_breadcrumbs">mod_cf_breadcrumbs.php</filename>
@@ -40,7 +40,17 @@
                 <field name="void" type="void"
                        label="" description=""/>
             </fieldset>
-
+            <fieldset name="MOD_CF_FILTERING_CACHE">
+                <field
+                        name="owncache"
+                        type="list"
+                        default="1"
+                        label="COM_MODULES_FIELD_CACHING_LABEL"
+                        description="COM_MODULES_FIELD_CACHING_DESC">
+                    <option value="1">JGLOBAL_USE_GLOBAL</option>
+                    <option value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
+                </field>
+            </fieldset>
             <fieldset name="MOD_CF_FILTERING_KEYWORD">
                 <field name="keyword_flt_published" type="radio" default="1"
                        class="btn-group btn-group-yesno" label="MOD_CF_FILTERING_PUBLISHED_LABEL"

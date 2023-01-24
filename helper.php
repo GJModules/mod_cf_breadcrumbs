@@ -58,7 +58,42 @@ class ModCfBreadcrumbsHelper
     {
         $this->module = $module;
         $this->filteringModule = \cftools::getModule();
+
+
     }
+
+	public static function getDataModCfBreadcrumbsCache( $module , $params ){
+		$helper = new ModCfBreadcrumbsHelper($module);
+		try
+		{
+		    // Code that may throw an Exception or Error.
+			$list = $helper->getList();
+		    // throw new \Exception('Code Exception '.__FILE__.':'.__LINE__) ;
+		}
+		catch (\Exception $e)
+		{
+		    // Executed only in PHP 5, will not be reached in PHP 7
+		    echo 'Выброшено исключение: ',  $e->getMessage(), "\n";
+		    echo'<pre>';print_r( $e );echo'</pre>'.__FILE__.' '.__LINE__;
+		    die(__FILE__ .' '. __LINE__ );
+		}
+
+		return $list ;
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	protected function getModuleCfFilter(){
+		$moduleCfFilter = \Joomla\CMS\Helper\ModuleHelper::getModule( 'mod_cf_filtering'  );
+		$moduleCfFilterParam = new JRegistry( $moduleCfFilter->params ) ;
+		// Получить все фильтры с опциями для модуля
+		$FilteringHelper = new ModCfFilteringHelper( $moduleCfFilterParam, $moduleCfFilter);
+
+		return $FilteringHelper->getFilters();
+
+	}
+
 
     /**
      * Main entry function that returns the selections
@@ -70,23 +105,37 @@ class ModCfBreadcrumbsHelper
     public function getList()
     {
         $selections = [];
-        $selected_flt = \CfInput::getInputs($cached = true);
+	    /**
+	     * @var array $selected_flt - список фильтров категорий + выбранные опции фильтра
+	     */
+		$selected_flt = \CfInput::getInputs($cached = true);
+
+
+
+
         if (empty($selected_flt)) {
             return [];
         }
 
         // selected filters after encoding the output
         $selected_flt = $output = \CfOutput::getOutput($selected_flt);
+		
+
+		
         $selected['selected_flt'] = $selected_flt;
         $selected['selected_flt_modif'] = $selected_flt;
-        $selected['selected_fl_per_flt'] = \CfOutput::getOutput(CfInput::getInputsPerFilter($this->module,
+        $selected['selected_fl_per_flt'] = \CfOutput::getOutput( CfInput::getInputsPerFilter($this->module,
             $cached = true),
             $escape = true, $perfilter = true);
 
-        $optionsHelper = \OptionsHelper::getInstance(\cftools::getModuleparams(), $this->filteringModule);
-        $UrlHanlder = new UrlHandler($this->filteringModule, $selected);
+        $optionsHelper = \OptionsHelper::getInstance(\cftools::getModuleparams(), $this->filteringModule );
+
+
+
+        $UrlHanlder = new UrlHandler( $this->filteringModule, $selected );
         $published_setting_name = '_published';
-        $params = new Registry($this->module->params);
+        $params = new Registry( $this->module->params );
+
 
         foreach ($selected_flt as $filterName => $values) {
             //the filter key is used as a key for the module's settings
@@ -111,6 +160,8 @@ class ModCfBreadcrumbsHelper
             }
 
             $filter = ['var_name' => $filterName, 'display' => $display];
+
+			
 
             $selections [$filterName] = [];
             if (is_array($values)) {
@@ -153,7 +204,47 @@ class ModCfBreadcrumbsHelper
                 $selections [$filterName][] = $filterOption;
             }
         }
-        return $this->sort($selections);
+
+	    $Filters = $this->getModuleCfFilter();
+
+	    /**
+	     * @var string $PatchToVmCategory -- ссылка  на категорию
+	     */
+		$PatchToVmCategory = seoTools_uri::getPatchToVmCategory( $selected_flt['virtuemart_category_id'][0] ) ;
+
+	    foreach ( $Filters as $filter )
+	    {
+			$Options =  $filter->getOptions() ;
+		    foreach ( $Options  as $item )
+		    {
+			    if ( $item->type == 'clear' || !$item->selected ) continue ;   #END IF
+
+			    $VarName = $filter->getVarName() ;
+			    foreach ( $selections[$VarName] as &$selection )
+			    {
+				    if ( $selection->id != $item->id  ) continue ; #END IF
+				    $selection->url = $item->option_sef_url->sef_url ;
+
+				    if ( $selection->url == '/component/virtuemart/Itemid0' )
+				    {
+					    $selection->url = $PatchToVmCategory ;
+				    }#END IF
+
+					
+			    }#END FOREACH
+		    }#END FOREACH
+	    }#END FOREACH
+
+
+	    $selections = $this->sort($selections);
+
+	    $resetLink =  [
+				'name' => 'Сбросить' ,
+				'url' => $PatchToVmCategory , 
+			] ;
+		array_unshift($selections , $resetLink )  ;
+
+        return $selections ;
     }
 
     /**
@@ -219,4 +310,33 @@ class ModCfBreadcrumbsHelper
         }
         return $prices;
     }
+
+	/**
+	 * Получить версию модуля из файла манифеста
+	 * ---
+	 * @return string - версия модуля - используется как MEDIA VERSION - для загрузки ресурсов
+	 * @since 3.9
+	 * TODO - добавить в шаблон Создания модуля
+	 */
+	public static function getModuleVersion():string
+	{
+		$doc           = \Joomla\CMS\Factory::getDocument();
+		$scriptOptions = $doc->getScriptOptions( 'mod_cf_breadcrumbs' );
+		if ( isset( $scriptOptions[ 'version' ] ) )
+		{
+			return $scriptOptions[ 'version' ];
+		}#END IF
+
+		$xml_file = __DIR__.'/mod_cf_breadcrumbs.xml';
+		$dom      = new DOMDocument( "1.0" , "utf-8" );
+		$dom->load( $xml_file );
+
+		/**
+		 * @var string $__v version mod_cf_filtering
+		 */
+		$version = $dom->getElementsByTagName( 'version' )->item( 0 )->textContent;
+		$doc->addScriptOptions( 'mod_cf_filtering' , [ 'version' => $version ] , true );
+
+		return $version;
+	}
 }
