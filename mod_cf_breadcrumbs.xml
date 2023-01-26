@@ -5,8 +5,8 @@
     <authorUrl></authorUrl>
     <copyright>Copyright(c)</copyright>
     <license>GNU/GPL v.2</license>
-    <creationDate>16.01.23-12:38</creationDate>
-    <version>1.0.7</version>
+    <creationDate>26.01.23-16:19</creationDate>
+    <version>1.0.8</version>
     <description><![CDATA[ <h3>Custom Filters Breadcrumbs - @Gartes</h3> ]]> </description>
     <files>
         <filename module="mod_cf_breadcrumbs">mod_cf_breadcrumbs.php</filename>
@@ -19,15 +19,7 @@
         <filename>mod_cf_breadcrumbs.xml</filename>
         <filename>UrlHandler.php</filename>
     </files>
-    <!--<languages folder="language">
-        <language tag="en-GB">en-GB/en-GB.mod_cf_breadcrumbs.ini</language>
-        <language tag="en-GB">en-GB/en-GB.mod_cf_breadcrumbs.sys.ini</language>
-        <language tag="el-GR">el-GR/el-GR.mod_cf_breadcrumbs.ini</language>
-        <language tag="en-GB">el-GR/el-GR.mod_cf_breadcrumbs.sys.ini</language>
-        <language tag="ru-RU">ru-RU/ru-RU.mod_cf_breadcrumbs.ini</language>
-        <language tag="ru-RU">ru-RU/ru-RU.mod_cf_breadcrumbs.sys.ini</language>
-    </languages>-->
-
+  
     <!-- Update servers -->
     <updateservers>
         <server type="extension" priority="1" name="mod_cf_breadcrumbs">https://raw.githubusercontent.com/GJModules/mod_cf_breadcrumbs/main/update.xml</server>

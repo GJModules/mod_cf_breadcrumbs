@@ -9,6 +9,7 @@
 // no direct access
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\Registry\Registry;
 use Breakdesigns\Module\CfBreadcrumbs\UrlHandler;
@@ -96,6 +97,8 @@ class ModCfBreadcrumbsHelper
 
 
     /**
+     * Основная функция входа, которая возвращает выбор
+     * ---
      * Main entry function that returns the selections
      *
      * @return array
@@ -109,9 +112,6 @@ class ModCfBreadcrumbsHelper
 	     * @var array $selected_flt - список фильтров категорий + выбранные опции фильтра
 	     */
 		$selected_flt = \CfInput::getInputs($cached = true);
-
-
-
 
         if (empty($selected_flt)) {
             return [];
@@ -229,8 +229,12 @@ class ModCfBreadcrumbsHelper
 				    {
 					    $selection->url = $PatchToVmCategory ;
 				    }#END IF
-
-					
+				    $selection->name = self::getTextTranslateString($selection->name);
+				    if ($_SERVER['REMOTE_ADDR'] ==  DEV_IP )
+				    {
+//				        echo'<pre>';print_r( $selection->name );echo'</pre>'.__FILE__.' '.__LINE__;
+				        
+				    }
 			    }#END FOREACH
 		    }#END FOREACH
 	    }#END FOREACH
@@ -243,9 +247,33 @@ class ModCfBreadcrumbsHelper
 				'url' => $PatchToVmCategory , 
 			] ;
 		array_unshift($selections , $resetLink )  ;
+		if ($_SERVER['REMOTE_ADDR'] ==  DEV_IP )
+		{
+			
+//		    echo'<pre>';print_r( $selections );echo'</pre>'.__FILE__.' '.__LINE__;
+//		    die(__FILE__ .' '. __LINE__ );
 
+		}
         return $selections ;
     }
+
+	/**
+	 * Найти языковые константы и перевести
+	 * etc/ {DIZELNII}
+	 * @param $name
+	 *
+	 * @return string
+	 * @since 3.9
+	 */
+	public static function getTextTranslateString( $name ){
+		preg_match_all("/{(.*?)}/", $name ,$matches, PREG_PATTERN_ORDER);
+
+		foreach ($matches[0] as $i => $value) {
+			$name = str_replace($value, Text::_( $matches[1][$i] ), $name );
+		}
+		return $name ;
+	}
+
 
     /**
      * Sort the selections according to the setting defined order

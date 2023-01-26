@@ -27,6 +27,8 @@ $language->load('mod_cf_filtering');
 $app = \Joomla\CMS\Factory::getApplication();
 $juri = \Joomla\CMS\Uri\Uri::getInstance();
 $filterUrl = $juri->getPath();
+
+
 $view = $app->input->get('view' , false , 'STRING ') ;
 $app->input->set('filter-url' , md5( $filterUrl ) );
 
@@ -54,16 +56,22 @@ if ($_SERVER['REMOTE_ADDR'] ==  DEV_IP )
 
 }
 
-//$params->set('owncache' , 0 );
-
-$option = $app->input->get('option') ;
+$view   = $app->input->get( 'view' , 'products' , 'cmd' );
+$option = $app->input->get( 'option' );
 $list = [] ;
+
 if ( ( $view != 'productdetails' ) &&  ($option == 'com_virtuemart' || $option == 'com_customfilters')   )
 {
- 	$list = \Joomla\CMS\Helper\ModuleHelper::moduleCache($module, $params, $cacheparams);
+	/**
+	 * Cache Method ModCfBreadcrumbsHelper::getDataModCfBreadcrumbsCache
+	 */
+ 	$list = \Joomla\CMS\Helper\ModuleHelper::moduleCache( $module, $params, $cacheparams);
 
 
-	 // Получить количество найденных товаров
+	/**
+	 * Для получения информации о всех найденных товарах - запускаем CustomfiltersModelProducts::getProductListing()
+	 * TODO - Закешировать в Cache Collback!
+	 */
 	$prefix = 'CustomfiltersModel' ;
 	$path = JPATH_ROOT.'/components/com_customfilters/models';
 	JModelLegacy::addIncludePath( $path , 'CustomfiltersModel' );
@@ -72,11 +80,21 @@ if ( ( $view != 'productdetails' ) &&  ($option == 'com_virtuemart' || $option =
 	 */
 	$ModelProducts = JModelLegacy::getInstance( 'Products' , $prefix ,  $config = array() );
 	$ProductListing = $ModelProducts->getProductListing();
-	$counter = count( $ProductListing );
-
+	// Получаем из APP - информацию о найденных товарах (количество, ценовой диапазон, список производителей, ...)
 	$ResultFilterDescription = $app->get('ResultFilterDescription');
 
+
 	$counter = $ResultFilterDescription['{{COUNT_PRODUCT_INT}}'] ;
+
+	if ($_SERVER['REMOTE_ADDR'] ==  DEV_IP )
+	{
+//        echo'<pre>';print_r( $view );echo'</pre>'.__FILE__.' '.__LINE__;
+//        echo'<pre>$filterUrl ';print_r( $filterUrl );echo'</pre>'.__FILE__.' '.__LINE__;
+//        echo'<pre>';print_r( $ResultFilterDescription );echo'</pre>'.__FILE__.' '.__LINE__;
+//		die(__FILE__ .' '. __LINE__ );
+
+
+	}
 
 	$resetLink = $list[0] ;
 	unset( $list[0] ) ;

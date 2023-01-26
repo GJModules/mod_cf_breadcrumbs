@@ -11,9 +11,9 @@ defined( '_JEXEC' ) or die;
 /**
  * @var stdClass $module
  * @var string   $moduleclass_sfx
- * @var array    $list    - Массив включенных фильтров
- * @var int      $counter - Количество найденных товаров
- * @var array      $resetLink - ссылка сбросить
+ * @var array    $list      - Массив включенных фильтров
+ * @var int      $counter   - Количество найденных товаров
+ * @var array    $resetLink - ссылка сбросить
  */
 
 use Joomla\CMS\Helper\ModuleHelper;
@@ -22,13 +22,24 @@ use Joomla\CMS\Factory;
 
 $__v = ModCfBreadcrumbsHelper::getModuleVersion();
 
+if ($_SERVER['REMOTE_ADDR'] ==  DEV_IP )
+{
+//    echo'<pre>';print_r( $counter );echo'</pre>'.__FILE__.' '.__LINE__;
 
+}
 
 $jinput   = Factory::getApplication()->input;
 $view     = $jinput->get( 'view' , 'products' , 'cmd' );
 $document = Factory::getDocument();
 $document->addStyleSheet( Uri::root().'modules/mod_cf_breadcrumbs/assets/css/tags.css?v=' . $__v  );
 $layouts = [ 3 => '_text' , 10 => '_color' ];
+
+if ($_SERVER['REMOTE_ADDR'] ==  DEV_IP )
+{
+//	echo'<pre>';print_r( $counter );echo'</pre>'.__FILE__.' '.__LINE__;
+
+}
+
 
 /*
 * view == module is used only when the module is loaded with ajax.

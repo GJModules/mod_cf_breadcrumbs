@@ -1,6 +1,9 @@
 .cf_breadcrumbs_wrapper{
-    ul.breadcrumb.empty{
-        display: none;
+    ul.breadcrumb{
+        background: none ;
+        &.empty{
+            display: none;
+        }
     }
     span.catalog-selection__label {
         display: block;

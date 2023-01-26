@@ -1,5 +1,7 @@
-.cf_breadcrumbs_wrapper ul.breadcrumb.empty {
-  display: none; }
+.cf_breadcrumbs_wrapper ul.breadcrumb {
+  background: none; }
+  .cf_breadcrumbs_wrapper ul.breadcrumb.empty {
+    display: none; }
 
 .cf_breadcrumbs_wrapper span.catalog-selection__label {
   display: block;
