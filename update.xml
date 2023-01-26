@@ -1,7 +1,7 @@
 <updates>
     <update>
         <name>Mod Filters Breadcrumbs by Gartes</name>
-        <description><![CDATA[Custom Filters Breadcrumbs - @Gartes]]></description>
+        <description><![CDATA[Модуль отображения количества товаров и выбранные значения фильтров в виде хлебных крошек/тегов - @Gartes]]></description>
         <type>module</type>
         <element>mod_cf_breadcrumbs</element>
         <version>1.0.8</version>
