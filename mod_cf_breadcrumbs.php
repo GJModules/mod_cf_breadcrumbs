@@ -60,6 +60,8 @@ $view   = $app->input->get( 'view' , 'products' , 'cmd' );
 $option = $app->input->get( 'option' );
 $list = [] ;
 
+
+
 if ( ( $view != 'productdetails' ) &&  ($option == 'com_virtuemart' || $option == 'com_customfilters')   )
 {
 	/**

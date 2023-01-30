@@ -5,8 +5,8 @@
     <authorUrl></authorUrl>
     <copyright>Copyright(c)</copyright>
     <license>GNU/GPL v.2</license>
-    <creationDate>26.01.23-16:19</creationDate>
-    <version>1.0.8</version>
+    <creationDate>31.01.23-00:37</creationDate>
+    <version>1.0.9</version>
     <description><![CDATA[ <h3>Custom Filters Breadcrumbs - @Gartes</h3> ]]> </description>
     <files>
         <filename module="mod_cf_breadcrumbs">mod_cf_breadcrumbs.php</filename>
