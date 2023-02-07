@@ -82,9 +82,19 @@ if ( ( $view != 'productdetails' ) &&  ($option == 'com_virtuemart' || $option =
 	 */
 	$ModelProducts = JModelLegacy::getInstance( 'Products' , $prefix ,  $config = array() );
 	$ProductListing = $ModelProducts->getProductListing();
+
 	// Получаем из APP - информацию о найденных товарах (количество, ценовой диапазон, список производителей, ...)
 	$ResultFilterDescription = $app->get('ResultFilterDescription');
 
+
+
+
+	if ($_SERVER['REMOTE_ADDR'] ==  DEV_IP )
+	{
+//	    echo'<pre>';print_r( $ResultFilterDescription );echo'</pre>'.__FILE__.' '.__LINE__;
+//	    die(__FILE__ .' '. __LINE__ );
+
+	}
 
 	$counter = $ResultFilterDescription['{{COUNT_PRODUCT_INT}}'] ;
 

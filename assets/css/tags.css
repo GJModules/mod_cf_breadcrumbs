@@ -2,6 +2,8 @@
   background: none; }
   .cf_breadcrumbs_wrapper ul.breadcrumb.empty {
     display: none; }
+  .cf_breadcrumbs_wrapper ul.breadcrumb li.item_catalog-selection:first-child {
+    display: inline-block; }
 
 .cf_breadcrumbs_wrapper span.catalog-selection__label {
   display: block;

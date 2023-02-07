@@ -4,6 +4,9 @@
         &.empty{
             display: none;
         }
+        li.item_catalog-selection:first-child{
+            display: inline-block;
+        }
     }
     span.catalog-selection__label {
         display: block;
