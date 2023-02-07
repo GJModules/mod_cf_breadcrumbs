@@ -83,30 +83,15 @@ if ( ( $view != 'productdetails' ) &&  ($option == 'com_virtuemart' || $option =
 	$ModelProducts = JModelLegacy::getInstance( 'Products' , $prefix ,  $config = array() );
 	$ProductListing = $ModelProducts->getProductListing();
 
+	// Количество найденных (отфильтрованных) товаров
+	$counter = 0 ;
 	// Получаем из APP - информацию о найденных товарах (количество, ценовой диапазон, список производителей, ...)
-	$ResultFilterDescription = $app->get('ResultFilterDescription');
-
-
-
-
-	if ($_SERVER['REMOTE_ADDR'] ==  DEV_IP )
+	$ResultFilterDescription = $app->get('ResultFilterDescription' , [] );
+	if ( !empty( $ResultFilterDescription ) )
 	{
-//	    echo'<pre>';print_r( $ResultFilterDescription );echo'</pre>'.__FILE__.' '.__LINE__;
-//	    die(__FILE__ .' '. __LINE__ );
+		$counter = $ResultFilterDescription['{{COUNT_PRODUCT_INT}}'] ;
+	}#END IF
 
-	}
-
-	$counter = $ResultFilterDescription['{{COUNT_PRODUCT_INT}}'] ;
-
-	if ($_SERVER['REMOTE_ADDR'] ==  DEV_IP )
-	{
-//        echo'<pre>';print_r( $view );echo'</pre>'.__FILE__.' '.__LINE__;
-//        echo'<pre>$filterUrl ';print_r( $filterUrl );echo'</pre>'.__FILE__.' '.__LINE__;
-//        echo'<pre>';print_r( $ResultFilterDescription );echo'</pre>'.__FILE__.' '.__LINE__;
-//		die(__FILE__ .' '. __LINE__ );
-
-
-	}
 
 	$resetLink = $list[0] ;
 	unset( $list[0] ) ;

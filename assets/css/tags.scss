@@ -4,9 +4,21 @@
         &.empty{
             display: none;
         }
-        li.item_catalog-selection:first-child{
+        li.item_catalog-selection{
             display: inline-block;
+            &:first-child{
+                display: inline-block;
+            }
+            &:before{
+                display: none;
+            }
+            a.cf_tag.cf_tag_icon_close{
+                &:before{
+                    display: none;
+                }
+            }
         }
+
     }
     span.catalog-selection__label {
         display: block;
