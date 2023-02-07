@@ -4,7 +4,7 @@
         <description><![CDATA[Модуль отображения количества товаров и выбранные значения фильтров в виде хлебных крошек/тегов - @Gartes]]></description>
         <type>module</type>
         <element>mod_cf_breadcrumbs</element>
-        <version>1.0.9</version>
+        <version>1.0.11</version>
         <client>site</client>
         <infourl title="Joomla!">https://www.joomla.org/announcements/release-news/5765-joomla-3-9-6-release.html
         </infourl>
