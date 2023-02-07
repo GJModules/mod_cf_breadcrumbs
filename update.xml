@@ -4,7 +4,7 @@
         <description><![CDATA[Модуль отображения количества товаров и выбранные значения фильтров в виде хлебных крошек/тегов - @Gartes]]></description>
         <type>module</type>
         <element>mod_cf_breadcrumbs</element>
-        <version>1.0.12</version>
+        <version>1.0.13</version>
         <client>site</client>
         <infourl title="Filters Breadcrumbs by Gartes">https://github.com/GJModules/mod_cf_breadcrumbs#readme</infourl>
         <downloads>
